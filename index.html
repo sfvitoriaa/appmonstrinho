@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Missão Escolar - Co-op RPG & Duolingo Edition</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Figtree:wght@500;600;700;800&display=swap">
+  
+  <style>
+    :root {
+      --bg-presentation: radial-gradient(circle at 50% 15%, #2a1452, #0e0921, #030209);
+      --font-display: 'Baloo 2', system-ui, sans-serif;
+      --font-body: 'Figtree', system-ui, sans-serif;
+      
+      /* Cores Neon & Cyber Gamer */
+      --p-bg: #120d29;
+      --p-card: #1f1747;
+      --p-card2: #2b2063;
+      --p-text: #FFFFFF;
+      --p-muted: #b0a8f0;
+      --p-yellow: #FFC93C;
+      --p-gold: #FFB000;
+      --p-purple: #9254FF;
+      --p-cyan: #00E5FF;
+      --p-red: #FF3366;
+      --p-green: #00E676;
+      --p-orange: #FF9100;
+      --p-pink: #FF007F;
+      --p-fire: #FF5722;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-presentation);
+      color: #fff;
+      font-family: var(--font-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 12px;
+      overflow-x: hidden;
+    }
+
+    /* Luz de Fundo Neon */
+    .ambient-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(146, 84, 255, 0.28), transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulseGlow 6s ease-in-out infinite alternate;
+    }
+
+    header.presentation-header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 650px;
+    }
+
+    header.presentation-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      color: var(--p-yellow);
+      text-shadow: 0 0 25px rgba(255, 201, 60, 0.5);
+      line-height: 1.1;
+    }
+
+    header.presentation-header p {
+      color: var(--p-muted);
+      font-size: 15px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    /* Container de Apresentação */
+    .showcase-container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 890px;
+    }
+
+    /* Painel Lateral do Apresentador */
+    .controls-panel {
+      background: rgba(31, 23, 71, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    }
+
+    .controls-panel h3 {
+      font-family: var(--font-display);
+      font-size: 21px;
+      color: #fff;
+    }
+
+    .controls-panel p.hint {
+      font-size: 13px;
+      color: var(--p-muted);
+      line-height: 1.4;
+    }
+
+    .jump-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-ctrl {
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-ctrl:hover {
+      background: rgba(255,255,255,0.18);
+      border-color: var(--p-yellow);
+    }
+
+    .btn-ctrl[aria-pressed="true"] {
+      background: var(--p-purple);
+      border-color: var(--p-yellow);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(146, 84, 255, 0.6);
+    }
+
+    .btn-action {
+      background: linear-gradient(180deg, #FFC93C, #FF9100);
+      color: #1a0f00;
+      border: 0;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 0 #c97a00;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #c97a00;
+    }
+
+    .btn-action:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #c97a00;
+    }
+
+    .sound-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--p-muted);
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Estrutura do Celular */
+    .phonewrap { display: flex; justify-content: center; }
+
+    .phone {
+      position: relative;
+      width: 340px;
+      height: 720px;
+      border-radius: 46px;
+      background: var(--p-bg);
+      border: 10px solid #080614;
+      box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.8), 0 0 45px rgba(146, 84, 255, 0.4);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: var(--p-text);
+      font-family: var(--font-body);
+    }
+
+    .phone * { box-sizing: border-box; }
+
+    /* Topo do Celular */
+    .status-bar {
+      height: 28px;
+      padding: 6px 18px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--p-muted);
+      z-index: 5;
+    }
+
+    .status-bar .notch {
+      width: 80px;
+      height: 16px;
+      background: #080614;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+      margin-top: -6px;
+    }
+
+    .screen {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 8px 14px 16px;
+      scrollbar-width: none;
+      position: relative;
+    }
+
+    .screen::-webkit-scrollbar { display: none; }
+
+    #particleCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 15;
+    }
+
+    .phone h4 {
+      font-size: 16px;
+      font-family: var(--font-display);
+      margin: 14px 0 6px;
+      color: #fff;
+    }
+
+    .phone small {
+      color: var(--p-muted);
+      font-size: 12px;
+    }
+
+    /* Navegação do Jogo */
+    .pnav {
+      flex: none;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #09061a;
+      padding: 6px 4px 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pnav button {
+      background: none;
+      border: 0;
+      color: var(--p-muted);
+      font: 700 11px var(--font-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 0;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: all 0.2s;
+    }
+
+    .pnav button svg { width: 22px; height: 22px; }
+
+    .pnav button[aria-current="true"] {
+      color: var(--p-yellow);
+      background: rgba(255, 201, 60, 0.12);
+      transform: translateY(-2px);
+    }
+
+    /* Duolingo Style Header & Stats */
+    .duo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    .duo-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font: 800 12.5px var(--font-display);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .duo-stat:active { transform: scale(0.95); }
+    .duo-stat.streak { color: var(--p-fire); text-shadow: 0 0 8px rgba(255, 87, 34, 0.5); }
+    .duo-stat.gold { color: var(--p-yellow); }
+    .duo-stat.level { color: var(--p-cyan); }
+    .duo-stat.chest { color: var(--p-pink); animation: pulseGlowBtn 1.5s infinite alternate; }
+
+    .ph-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .who { display: flex; align-items: center; gap: 10px; }
+    .who b { display: block; font-family: var(--font-display); font-size: 17px; line-height: 1.1; }
+
+    .avatar-frame {
+      position: relative;
+      width: 46px;
+      height: 46px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--p-purple), var(--p-cyan));
+      display: grid;
+      place-items: center;
+      font: 800 16px var(--font-display);
+      border: 2px solid var(--p-yellow);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    .gear-hat {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    }
+
+    .xp-bar-wrap { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
+
+    .bar {
+      height: 10px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar > i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Meta Diária Duolingo */
+    .daily-goal-box {
+      background: linear-gradient(135deg, rgba(146, 84, 255, 0.18), rgba(0, 229, 255, 0.12));
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 16px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .daily-goal-info { display: flex; flex-direction: column; gap: 2px; }
+    .daily-goal-info b { font-size: 12px; color: #fff; }
+    .daily-goal-info small { color: var(--p-muted); font-size: 11px; }
+
+    .offline-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      background: rgba(0, 230, 118, 0.12);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      color: var(--p-green);
+      border-radius: 12px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .offline-tag svg { width: 14px; height: 14px; flex: none; }
+
+    /* Botões Padrão */
+    .row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pbtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      border-radius: 14px;
+      border: 0;
+      padding: 6px 10px;
+      font: 800 13.5px var(--font-display);
+      background: linear-gradient(180deg, #FFC93C, #FF9F43);
+      color: #1a0f00;
+      box-shadow: 0 4px 0 #C99A10;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .pbtn svg { width: 16px; height: 16px; }
+    .pbtn:active { transform: translateY(3px); box-shadow: 0 1px 0 #C99A10; }
+
+    .pbtn.purple {
+      background: linear-gradient(180deg, #9254FF, #6B3FF0);
+      color: #fff;
+      box-shadow: 0 4px 0 #4A2BB8;
+    }
+    .pbtn.purple:active { box-shadow: 0 1px 0 #4A2BB8; }
+
+    .pbtn.green {
+      background: linear-gradient(180deg, #00E676, #00A854);
+      color: #022410;
+      box-shadow: 0 4px 0 #007038;
+    }
+
+    .pbtn.pink {
+      background: linear-gradient(180deg, #FF007F, #D80068);
+      color: #fff;
+      box-shadow: 0 4px 0 #A0004D;
+    }
+
+    .pbtn.cyan {
+      background: linear-gradient(180deg, #00E5FF, #00B0FF);
+      color: #002b3d;
+      box-shadow: 0 4px 0 #0088cc;
+    }
+
+    /* Cards de Missão */
+    .mcard {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      text-align: left;
+      background: var(--p-card);
+      border: 2px solid transparent;
+      border-radius: 18px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mcard:hover {
+      border-color: var(--p-purple);
+      background: var(--p-card2);
+      transform: translateY(-2px);
+    }
+
+    .mcard .mi { flex: none; width: 48px; height: 48px; }
+    .mcard .mt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .mcard .mt b { font-family: var(--font-display); font-size: 15px; }
+    .mcard .urgent { color: var(--p-red); font-weight: 700; }
+
+    /* Arena de Batalha de RPG & Animações do Monstrinho */
+    .stage {
+      position: relative;
+      margin-top: 10px;
+      border-radius: 22px;
+      padding: 16px 12px;
+      text-align: center;
+      background: radial-gradient(circle at 50% 35%, #3e2f8d, var(--p-card) 85%);
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.5), 0 8px 20px rgba(0,0,0,0.3);
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .stage .mon {
+      width: 155px;
+      height: 155px;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      animation: monsterIdle 2.8s ease-in-out infinite;
+      position: relative;
+    }
+
+    .stage .mon svg { width: 100%; height: 100%; transition: transform 0.2s; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
+    
+    /* Animação de Dano / Golpe no Monstro */
+    .stage.hit .mon { animation: monsterHit 0.35s ease-in-out; }
+    .stage.hit { animation: screenShake 0.25s ease-in-out; }
+
+    .stage h5 { margin: 4px 0 0; font: 800 19px var(--font-display); color: #fff; }
+
+    .stage .tap-prompt {
+      font-size: 11px;
+      color: var(--p-yellow);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      animation: pulseText 1.2s infinite;
+    }
+
+    /* Botão de Super Golpe (Ultimate Skill) */
+    .special-atk-btn {
+      margin-top: 8px;
+      background: linear-gradient(135deg, #FF007F, #FF9100);
+      border: 0;
+      color: #fff;
+      font: 900 13px var(--font-display);
+      padding: 8px 16px;
+      border-radius: 99px;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+      animation: popIn 0.3s ease, pulseGlowBtn 1s infinite alternate;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Popups de Dano RPG */
+    .damage-pop {
+      position: absolute;
+      font: 900 26px var(--font-display);
+      color: #FF3366;
+      text-shadow: 0 2px 0 #000, 0 0 10px rgba(255, 51, 102, 0.8);
+      pointer-events: none;
+      animation: dmgFloat 0.75s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+      z-index: 20;
+    }
+
+    .damage-pop.gold {
+      color: #FFC93C;
+      text-shadow: 0 2px 0 #7A4B00, 0 0 12px rgba(255, 201, 60, 0.9);
+      font-size: 22px;
+    }
+
+    .combo-tag {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      background: var(--p-red);
+      color: #fff;
+      font: 800 11px var(--font-display);
+      padding: 2px 8px;
+      border-radius: 99px;
+      box-shadow: 0 0 10px rgba(255, 51, 102, 0.6);
+      animation: popIn 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    /* Checklist de Tarefas */
+    .steps { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      border-radius: 16px;
+      background: var(--p-card);
+      color: inherit;
+      font: 600 13.5px var(--font-body);
+      padding: 10px 12px;
+      min-height: 50px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .step:hover { background: var(--p-card2); }
+
+    .step .ck {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: 2px solid var(--p-purple);
+      display: grid;
+      place-items: center;
+      transition: all 0.2s;
+    }
+
+    .step .ck svg { width: 16px; height: 16px; opacity: 0; }
+
+    .step .xpt {
+      margin-left: auto;
+      font: 800 12.5px var(--font-display);
+      color: var(--p-yellow);
+      white-space: nowrap;
+    }
+
+    .step.done { opacity: 0.55; }
+    .step.done .ck { background: var(--p-green); border-color: var(--p-green); color: #022410; }
+    .step.done .ck svg { opacity: 1; }
+    .step.done span.tx { text-decoration: line-through; }
+
+    /* Modal / Formulario de Registro de Nova Tarefa */
+    .task-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 8, 26, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 16px;
+      overflow-y: auto;
+      animation: popIn 0.25s ease-out;
+    }
+
+    .task-modal h4 {
+      font-size: 18px;
+      color: var(--p-yellow);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--p-muted);
+    }
+
+    .form-group input, .form-group select {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--p-yellow);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .focus-box {
+      margin-top: 12px;
+      background: var(--p-card);
+      border-radius: 18px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .focus-box .tm {
+      font: 800 36px var(--font-display);
+      color: var(--p-cyan);
+      text-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+      line-height: 1.1;
+    }
+
+    .win-banner {
+      margin-top: 10px;
+      background: rgba(0, 230, 118, 0.16);
+      border: 2px solid var(--p-green);
+      border-radius: 16px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 800;
+      color: var(--p-green);
+      font-size: 13.5px;
+    }
+
+    /* Loja de Equipamentos */
+    .shop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .shop-item {
+      background: var(--p-card);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 12px 8px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .shop-item:hover { border-color: var(--p-yellow); background: var(--p-card2); }
+    .shop-item .icon { font-size: 28px; }
+    .shop-item b { font: 700 13px var(--font-display); }
+    .shop-item .price {
+      font: 800 12px var(--font-display);
+      color: var(--p-yellow);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .shop-item.equipped { border-color: var(--p-green); background: rgba(0,230,118,0.1); }
+
+    /* Aba de Aliados (Raide & Guilda) */
+    .raid-card {
+      background: linear-gradient(135deg, #2b1d6e, #181140);
+      border: 2px solid var(--p-purple);
+      border-radius: 20px;
+      padding: 14px;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .raid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .raid-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--p-yellow);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .raid-boss-stage {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.25);
+      border-radius: 14px;
+      padding: 10px;
+      margin: 8px 0;
+    }
+
+    .raid-boss-stage .boss-icon {
+      font-size: 38px;
+      filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.6));
+      animation: floatMon 2.5s infinite ease-in-out;
+    }
+
+    .leaderboard {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .leader-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.05);
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .leader-row.me { border: 1px solid var(--p-cyan); background: rgba(0, 229, 255, 0.1); }
+
+    .partner-card {
+      background: var(--p-card);
+      border-radius: 18px;
+      padding: 12px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .partner-card .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--p-green);
+      box-shadow: 0 0 8px var(--p-green);
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .activity-feed {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feed-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 3px solid var(--p-cyan);
+      padding: 8px 10px;
+      border-radius: 0 10px 10px 0;
+      font-size: 11.5px;
+    }
+
+    .feed-item b { color: var(--p-yellow); }
+
+    /* Overlay de QR Code / Bluetooth */
+    .scan {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 8, 26, 0.95);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      padding: 24px;
+      font-weight: 700;
+    }
+
+    .scanbox {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      border: 4px solid var(--p-yellow);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 0 25px rgba(255,201,60,0.4);
+    }
+
+    .scanbox i {
+      position: absolute;
+      left: 0; right: 0; height: 4px;
+      background: var(--p-green);
+      box-shadow: 0 0 16px var(--p-green);
+      animation: scanline 1.2s ease-in-out infinite alternate;
+    }
+
+    /* Toast */
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 82px;
+      transform: translate(-50%, 16px);
+      background: linear-gradient(135deg, var(--p-yellow), var(--p-orange));
+      color: #1a0f00;
+      font: 800 13px var(--font-display);
+      border-radius: 99px;
+      padding: 8px 18px;
+      max-width: 90%;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 25;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* Keyframes e Animações do Monstrinho */
+    @keyframes monsterIdle {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.03) rotate(1deg); }
+    }
+
+    @keyframes monsterBlink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+
+    @keyframes monsterHit {
+      0% { transform: scale(1) rotate(0deg); }
+      20% { transform: scale(1.2) rotate(-10deg) translateX(-8px); filter: brightness(2) drop-shadow(0 0 20px #FF3366); }
+      40% { transform: scale(0.9) rotate(10deg) translateX(8px); }
+      60% { transform: scale(1.1) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-4px, 3px); }
+      40% { transform: translate(4px, -3px); }
+      60% { transform: translate(-3px, -2px); }
+      80% { transform: translate(2px, 3px); }
+    }
+
+    @keyframes pulseGlow {
+      from { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); }
+      to { opacity: 0.9; transform: translate(-50%, -50%) scale(1.08); }
+    }
+
+    @keyframes pulseGlowBtn {
+      from { box-shadow: 0 0 10px rgba(255,0,127,0.5); }
+      to { box-shadow: 0 0 20px rgba(255,0,127,0.9); transform: scale(1.03); }
+    }
+
+    @keyframes floatMon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes dmgFloat {
+      0% { opacity: 0; transform: translateY(10px) scale(0.6); }
+      20% { opacity: 1; transform: translateY(-10px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-50px) scale(0.9); }
+    }
+
+    @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes scanline { from { top: 4%; } to { top: 92%; } }
+    @keyframes popIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <header class="presentation-header">
+    <h1>Missão Escolar</h1>
+    <p>O RPG Co-op estilo Duolingo em que fazer o trabalho escolar derrota monstros e une a turma!</p>
+  </header>
+
+  <div class="showcase-container">
+    
+    <!-- Painel Lateral -->
+    <div class="controls-panel">
+      <h3>⚔️ Painel do Apresentador</h3>
+      <p class="hint">Navegue pelas telas do jogo durante a demonstração:</p>
+      
+      <div class="jump-grid">
+        <button class="btn-ctrl" type="button" data-jump="0" aria-pressed="true">1 · Missões</button>
+        <button class="btn-ctrl" type="button" data-jump="1">2 · Batalha</button>
+        <button class="btn-ctrl" type="button" data-jump="2">3 · Loja 🛒</button>
+        <button class="btn-ctrl" type="button" data-jump="3">4 · Aliados 🤝</button>
+      </div>
+
+      <button class="btn-action" type="button" id="resetProto">🔄 Reiniciar Jogo</button>
+
+      <div class="sound-toggle">
+        <span>Sintetizador Áudio Arcade</span>
+        <input type="checkbox" id="soundToggle" checked style="accent-color: var(--p-yellow); width: 18px; height: 18px; cursor: pointer;">
+      </div>
+    </div>
+
+    <!-- Celular -->
+    <div class="phonewrap">
+      <div class="phone" id="phone">
+        
+        <div class="status-bar">
+          <span id="liveClock">10:42</span>
+          <div class="notch"></div>
+          <span>100% 🔋</span>
+        </div>
+
+        <div class="screen" id="screen" tabindex="0">
+          <canvas id="particleCanvas"></canvas>
+        </div>
+
+        <nav class="pnav" id="pnav"></nav>
+        <div class="toast" id="toast" role="status"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+  (function(){
+    /* ---------- Relógio Digital ---------- */
+    function updateClock() {
+      var now = new Date();
+      var h = ('0' + now.getHours()).slice(-2);
+      var m = ('0' + now.getMinutes()).slice(-2);
+      var el = document.getElementById('liveClock');
+      if (el) el.textContent = h + ':' + m;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* ---------- Partículas Canvas ---------- */
+    var canvas = document.getElementById('particleCanvas');
+    var ctx = canvas ? canvas.getContext('2d') : null;
+    var particles = [];
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    setTimeout(resizeCanvas, 100);
+
+    function spawnParticles(x, y, count, isGold) {
+      if (!ctx) return;
+      resizeCanvas();
+      var colors = isGold ? ['#FFC93C', '#FFB000', '#FFE9A8'] : ['#FF007F', '#00E676', '#00E5FF', '#FF3366', '#9254FF'];
+      for (var i = 0; i < count; i++) {
+        var angle = Math.random() * Math.PI * 2;
+        var speed = Math.random() * 6 + 2;
+        particles.push({
+          x: x || canvas.width / 2,
+          y: y || canvas.height / 3,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          size: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          life: Math.random() * 20 + 20
+        });
+      }
+    }
+
+    function updateParticles() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.vy += 0.25;
+        p.alpha -= 1 / p.life;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      requestAnimationFrame(updateParticles);
+    }
+    requestAnimationFrame(updateParticles);
+
+    /* ---------- Áudio Arcade (Web Audio API) ---------- */
+    var audioCtx = null;
+    function playSound(type, pitchMult) {
+      var soundOn = document.getElementById('soundToggle').checked;
+      if (!soundOn) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        var now = audioCtx.currentTime;
+        var pm = pitchMult || 1;
+
+        if (type === 'click') {
+          var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain();
+          osc.type = 'sine'; osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.frequency.setValueAtTime(500 * pm, now);
+          osc.frequency.exponentialRampToValueAtTime(220 * pm, now + 0.04);
+          gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
+          osc.start(now); osc.stop(now + 0.04);
+        } else if (type === 'hit') {
+          var osc = audioCtx.createOscillator(); var gain = audioCtx.createGain();
+          osc.type = 'sawtooth'; osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.frequency.setValueAtTime(280 * pm, now);
+          osc.frequency.exponentialRampToValueAtTime(50 * pm, now + 0.12);
+          gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now); osc.stop(now + 0.12);
+        } else if (type === 'special') {
+          [300, 450, 600, 900].forEach(function(f, i){
+            var o = audioCtx.createOscillator(); var g = audioCtx.createGain();
+            o.type = 'square'; o.connect(g); g.connect(audioCtx.destination);
+            var st = now + i * 0.05;
+            o.frequency.setValueAtTime(f, st);
+            g.gain.setValueAtTime(0.18, st); g.gain.linearRampToValueAtTime(0.01, st + 0.12);
+            o.start(st); o.stop(st + 0.12);
+          });
+        } else if (type === 'gold' || type === 'chest') {
+          [987.77, 1318.51, 1567.98].forEach(function(f, i){
+            var o = audioCtx.createOscillator(); var g = audioCtx.createGain();
+            o.type = 'sine'; o.connect(g); g.connect(audioCtx.destination);
+            var st = now + i * 0.06;
+            o.frequency.setValueAtTime(f * pm, st);
+            g.gain.setValueAtTime(0.15, st); g.gain.linearRampToValueAtTime(0.01, st + 0.12);
+            o.start(st); o.stop(st + 0.12);
+          });
+        } else if (type === 'win') {
+          [523.25, 659.25, 783.99, 1046.50].forEach(function(freq, i){
+            var o = audioCtx.createOscillator(); var g = audioCtx.createGain();
+            o.type = 'triangle'; o.connect(g); g.connect(audioCtx.destination);
+            var st = now + i * 0.08;
+            o.frequency.setValueAtTime(freq, st);
+            g.gain.setValueAtTime(0.2, st); g.gain.linearRampToValueAtTime(0.01, st + 0.22);
+            o.start(st); o.stop(st + 0.22);
+          });
+        }
+      } catch(e){}
+    }
+
+    /* ---------- Ícones SVG ---------- */
+    var IC = {
+      map: '<path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+      bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+      shop: '<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>',
+      users: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.3c3 0 6 1.7 6 5.2"/>',
+      wifioff: '<path d="M2 9a15 15 0 0120 0M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0M3 3l18 18"/><circle cx="12" cy="19.5" r="1"/>',
+      qr: '<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM19 14h2v2h-2zM14 19h2v2h-2zM19 19h2v2h-2z"/>',
+      check: '<path d="M4 12.5l5 5L20 6.5"/>',
+      plus: '<path d="M12 5v14M5 12h14"/>'
+    };
+
+    function ic(n) {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + IC[n] + '</svg>';
+    }
+
+    /* ---------- SVG Monstro Animado ---------- */
+    function monsterSvg(color, hp) {
+      var dark = '#150f33', g = '';
+      g += '<ellipse cx="60" cy="110" rx="36" ry="7" fill="rgba(0,0,0,.35)"/>';
+      var isDead = hp <= 0;
+      var tilt = isDead ? ' transform="rotate(-15 60 70)"' : '';
+      g += '<g' + tilt + '>';
+      // Chifres do Monstro
+      g += '<path d="M34 38L21 10l28 17z" fill="#FFE9A8"/><path d="M86 38l13-28-28 17z" fill="#FFE9A8"/>';
+      // Corpo Principal
+      g += '<path d="M60 22C92 22 105 50 103 78c-2 22-18 30-43 30S19 100 17 78C15 50 28 22 60 22z" fill="' + color + '"/>';
+      g += '<ellipse cx="60" cy="88" rx="24" ry="15" fill="#fff" opacity=".2"/>';
+      
+      if (isDead) {
+        // Olhos de X (Morto)
+        g += '<path d="M38 50l14 12M52 50L38 62M68 50l14 12M82 50L68 62" stroke="' + dark + '" stroke-width="5" stroke-linecap="round"/>';
+        g += '<path d="M44 82q8-6 16 0t16 0" stroke="' + dark + '" stroke-width="5" fill="none" stroke-linecap="round"/>';
+        g += '<path d="M64 84q5 14 12 4" fill="#FF8FA3"/>';
+      } else if (hp <= 35) {
+        // Expressão Machucado / Assustado
+        g += '<circle cx="45" cy="54" r="11" fill="#fff"/><circle cx="75" cy="54" r="11" fill="#fff"/>';
+        g += '<circle cx="45" cy="54" r="4" fill="' + dark + '"/><circle cx="75" cy="54" r="4" fill="' + dark + '"/>';
+        g += '<path d="M42 86q18-14 36 0" stroke="' + dark + '" stroke-width="5" fill="none" stroke-linecap="round"/>';
+        // Gotinhas de Suor
+        g += '<path d="M96 42q2 6 0 10t-4-10z" fill="#00E5FF"/>';
+      } else {
+        // Olhos com Piscar Animado (Blink)
+        g += '<g style="animation: monsterBlink 4s infinite;">';
+        g += '  <circle cx="45" cy="54" r="12" fill="#fff"/><circle cx="75" cy="54" r="12" fill="#fff"/>';
+        g += '  <circle cx="48" cy="56" r="5" fill="' + dark + '"/><circle cx="72" cy="56" r="5" fill="' + dark + '"/>';
+        g += '  <circle cx="50" cy="54" r="2" fill="#fff"/><circle cx="74" cy="54" r="2" fill="#fff"/>';
+        g += '</g>';
+        // Sobrancelhas Agressivas
+        g += '<path d="M32 40l22 10M88 40L66 50" stroke="' + dark + '" stroke-width="6" stroke-linecap="round"/>';
+        // Boca com Dentes
+        g += '<path d="M40 84q20-18 40 0z" fill="' + dark + '"/>';
+        g += '<path d="M48 76l4 6l4-6M64 76l4 6l4-6" fill="#fff"/>';
+      }
+      g += '</g>';
+      return '<svg viewBox="0 0 120 120" aria-hidden="true">' + g + '</svg>';
+    }
+
+    /* ---------- Estado Inicial do Jogo ---------- */
+    function freshMissions() {
+      return [
+        {
+          id: 'm1', nome: 'Projeto de Banco de Dados', curto: 'Banco Dados', monstro: 'Amanhãzão', dias: 1,
+          etapas: [
+            { t: 'Abrir o arquivo do projeto', xp: 10, gold: 15, done: false },
+            { t: 'Desenhar 3 tabelas no papel', xp: 20, gold: 25, done: false },
+            { t: 'Escrever os 5 comandos SQL', xp: 30, gold: 40, done: false }
+          ]
+        },
+        {
+          id: 'm2', nome: 'Relatório de Lógica', curto: 'Lógica', monstro: 'Soneca Jr.', dias: 3,
+          etapas: [
+            { t: 'Reler o enunciado', xp: 10, gold: 15, done: false },
+            { t: 'Fazer o fluxograma', xp: 20, gold: 25, done: false },
+            { t: 'Escrever a conclusão', xp: 30, gold: 40, done: false }
+          ]
+        }
+      ];
+    }
+
+    function freshStore() {
+      return [
+        { id: 'i1', name: 'Espada Teclado', price: 50, icon: '⌨️', equipped: false },
+        { id: 'i2', name: 'Escudo de Café', price: 80, icon: '☕', equipped: false },
+        { id: 'i3', name: 'Chapéu Mago', price: 120, icon: '🧙‍♂️', equipped: false },
+        { id: 'i4', name: 'Poção de Foco', price: 40, icon: '🧪', equipped: false }
+      ];
+    }
+
+    var state = {
+      tab: 0,
+      xp: 40,
+      level: 2,
+      gold: 60,
+      streak: 5,
+      dailyDone: 1,
+      dailyGoalTotal: 3,
+      chestClaimed: false,
+      scannerOpen: false,
+      addTaskOpen: false,
+      missions: freshMissions(),
+      activeMissionId: 'm1',
+      bossHp: 100,
+      bossMaxHp: 100,
+      combo: 0,
+      focusing: false,
+      timerSec: 25 * 60,
+      timerInterval: null,
+      store: freshStore(),
+      equippedHat: null,
+      raidHp: 650,
+      raidMaxHp: 1000,
+      raidDmgDealt: 0,
+      activityFeed: [
+        { user: 'Lucas (Mago)', action: 'completou etapa de SQL (+30 XP)' },
+        { user: 'Sofia (Curandeira)', action: 'causou 120 de dano no Chefão da Guilda!' }
+      ]
+    };
+
+    function resetGame() {
+      if (state.timerInterval) clearInterval(state.timerInterval);
+      state = {
+        tab: 0,
+        xp: 40,
+        level: 2,
+        gold: 60,
+        streak: 5,
+        dailyDone: 1,
+        dailyGoalTotal: 3,
+        chestClaimed: false,
+        scannerOpen: false,
+        addTaskOpen: false,
+        missions: freshMissions(),
+        activeMissionId: 'm1',
+        bossHp: 100,
+        bossMaxHp: 100,
+        combo: 0,
+        focusing: false,
+        timerSec: 25 * 60,
+        timerInterval: null,
+        store: freshStore(),
+        equippedHat: null,
+        raidHp: 650,
+        raidMaxHp: 1000,
+        raidDmgDealt: 0,
+        activityFeed: [
+          { user: 'Lucas (Mago)', action: 'completou etapa de SQL (+30 XP)' },
+          { user: 'Sofia (Curandeira)', action: 'causou 120 de dano no Chefão da Guilda!' }
+        ]
+      };
+      showToast('Jogo Reiniciado!');
+      render();
+    }
+
+    /* ---------- Toast Notifications ---------- */
+    var toastTimeout = null;
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('show');
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    /* ---------- Lógica Gamer Duolingo & RPG ---------- */
+    function addXpAndGold(xpAmount, goldAmount) {
+      state.xp += xpAmount;
+      state.gold += goldAmount;
+      var xpNeeded = state.level * 50;
+      if (state.xp >= xpNeeded) {
+        state.xp -= xpNeeded;
+        state.level += 1;
+        playSound('win');
+        spawnParticles(null, null, 35, true);
+        showToast('🎉 LEVEL UP! Você alcançou o Nível ' + state.level + '!');
+      } else {
+        playSound('gold');
+      }
+    }
+
+    function getActiveMission() {
+      for (var i = 0; i < state.missions.length; i++) {
+        if (state.missions[i].id === state.activeMissionId) return state.missions[i];
+      }
+      return state.missions[0];
+    }
+
+    function claimDailyChest() {
+      if (state.chestClaimed) {
+        showToast('Baú já resgatado hoje! Volte amanhã!');
+        return;
+      }
+      state.chestClaimed = true;
+      addXpAndGold(50, 100);
+      playSound('chest');
+      spawnParticles(null, null, 40, true);
+      showToast('🎁 BAÚ ABERTO! +50 XP e +100 Ouro!');
+      render();
+    }
+
+    function toggleStep(missionId, stepIdx) {
+      var m = null;
+      for (var i = 0; i < state.missions.length; i++) {
+        if (state.missions[i].id === missionId) { m = state.missions[i]; break; }
+      }
+      if (!m) return;
+      var step = m.etapas[stepIdx];
+      if (!step.done) {
+        step.done = true;
+        state.dailyDone = Math.min(state.dailyGoalTotal, state.dailyDone + 1);
+        addXpAndGold(step.xp, step.gold);
+        spawnParticles(null, null, 15, true);
+        showToast('Etapa concluída! +' + step.xp + ' XP / +' + step.gold + ' Ouro');
+        
+        // Aplica dano ao monstro da missão ativa
+        state.bossHp = Math.max(0, state.bossHp - 30);
+        
+        // Registra no Feed do Co-op
+        state.activityFeed.unshift({
+          user: 'Você (Guerreiro)',
+          action: 'concluiu: "' + step.t + '"'
+        });
+        if (state.activityFeed.length > 5) state.activityFeed.pop();
+      } else {
+        step.done = false;
+        showToast('Etapa desmarcada');
+      }
+      render();
+    }
+
+    function attackMonster(e) {
+      if (state.bossHp <= 0) return;
+      playSound('hit');
+      state.combo += 1;
+      var dmg = Math.floor(Math.random() * 8) + 12 + state.combo;
+      state.bossHp = Math.max(0, state.bossHp - dmg);
+
+      var stage = document.getElementById('stageEl');
+      if (stage) {
+        stage.classList.remove('hit');
+        void stage.offsetWidth;
+        stage.classList.add('hit');
+
+        var rect = stage.getBoundingClientRect();
+        var pop = document.createElement('div');
+        pop.className = 'damage-pop';
+        pop.textContent = '-' + dmg;
+        pop.style.left = (e.clientX - rect.left - 15) + 'px';
+        pop.style.top = (e.clientY - rect.top - 20) + 'px';
+        stage.appendChild(pop);
+        setTimeout(function(){ if (pop.parentNode) pop.parentNode.removeChild(pop); }, 750);
+      }
+
+      spawnParticles(e.clientX, e.clientY, 8, false);
+
+      if (state.bossHp <= 0) {
+        playSound('win');
+        addXpAndGold(50, 100);
+        spawnParticles(null, null, 40, true);
+        showToast('⚔️ MONSTRO DERROTADO! +50 XP / +100 Ouro');
+      }
+      render();
+    }
+
+    function specialAttack() {
+      if (state.bossHp <= 0) return;
+      playSound('special');
+      var dmg = 50;
+      state.bossHp = Math.max(0, state.bossHp - dmg);
+      state.combo += 3;
+      spawnParticles(null, null, 35, false);
+
+      var stage = document.getElementById('stageEl');
+      if (stage) {
+        stage.classList.remove('hit');
+        void stage.offsetWidth;
+        stage.classList.add('hit');
+
+        var pop = document.createElement('div');
+        pop.className = 'damage-pop gold';
+        pop.textContent = 'CRÍTICO! -' + dmg;
+        pop.style.left = '30%';
+        pop.style.top = '35%';
+        stage.appendChild(pop);
+        setTimeout(function(){ if (pop.parentNode) pop.parentNode.removeChild(pop); }, 750);
+      }
+
+      if (state.bossHp <= 0) {
+        playSound('win');
+        addXpAndGold(50, 100);
+        spawnParticles(null, null, 40, true);
+        showToast('💥 SUPER GOLPE FINALIZADOR! Monstro Derrotado!');
+      }
+      render();
+    }
+
+    function attackRaidBoss() {
+      if (state.raidHp <= 0) return;
+      playSound('hit', 1.3);
+      var dmg = Math.floor(Math.random() * 20) + 30;
+      state.raidHp = Math.max(0, state.raidHp - dmg);
+      state.raidDmgDealt += dmg;
+      
+      spawnParticles(null, null, 15, false);
+      showToast('⚔️ Você causou ' + dmg + ' de dano no Chefão da Raide!');
+
+      state.activityFeed.unshift({
+        user: 'Você (Guerreiro)',
+        action: 'causou ' + dmg + ' de dano no Chefão!'
+      });
+      if (state.activityFeed.length > 5) state.activityFeed.pop();
+
+      if (state.raidHp <= 0) {
+        playSound('win');
+        addXpAndGold(150, 300);
+        spawnParticles(null, null, 50, true);
+        showToast('🏆 RAIDE CONCLUÍDA! A Guilda venceu o Procrastinador Supremo!');
+      }
+      render();
+    }
+
+    function toggleTimer() {
+      if (state.focusing) {
+        clearInterval(state.timerInterval);
+        state.focusing = false;
+        showToast('Modo Foco Pausado');
+      } else {
+        state.focusing = true;
+        playSound('click');
+        showToast('🎯 Modo Foco Iniciado! Mantenha a concentração!');
+        state.timerInterval = setInterval(function(){
+          if (state.timerSec > 0) {
+            state.timerSec--;
+            var tmEl = document.getElementById('timerText');
+            if (tmEl) {
+              var m = Math.floor(state.timerSec / 60);
+              var s = state.timerSec % 60;
+              tmEl.textContent = ('0' + m).slice(-2) + ':' + ('0' + s).slice(-2);
+            }
+          } else {
+            clearInterval(state.timerInterval);
+            state.focusing = false;
+            addXpAndGold(40, 50);
+            playSound('win');
+            showToast('⏰ Sessão de Foco Concluída! +40 XP!');
+            render();
+          }
+        }, 1000);
+      }
+      render();
+    }
+
+    function createCustomTask(title, monName, days, stepsArr) {
+      if (!title) { showToast('Escreva o nome da matéria/tarefa!'); return; }
+      var newId = 'm' + (state.missions.length + 1);
+      var newMission = {
+        id: newId,
+        nome: title,
+        curto: title.substring(0, 12),
+        monstro: monName || 'Devorador de Prazos',
+        dias: parseInt(days, 10) || 2,
+        etapas: stepsArr.length > 0 ? stepsArr : [
+          { t: 'Pesquisar o conteúdo', xp: 15, gold: 20, done: false },
+          { t: 'Escrever a primeira versão', xp: 25, gold: 30, done: false }
+        ]
+      };
+      state.missions.push(newMission);
+      state.activeMissionId = newId;
+      state.bossHp = 100;
+      state.addTaskOpen = false;
+      playSound('win');
+      spawnParticles(null, null, 25, true);
+      showToast('✨ Nova Missão Registrada com Sucesso!');
+      render();
+    }
+
+    function buyItem(itemId) {
+      for (var i = 0; i < state.store.length; i++) {
+        var item = state.store[i];
+        if (item.id === itemId) {
+          if (item.equipped) {
+            item.equipped = false;
+            if (item.icon === '🧙‍♂️') state.equippedHat = null;
+            showToast('Item desequipado');
+            playSound('click');
+          } else if (state.gold >= item.price) {
+            state.gold -= item.price;
+            item.equipped = true;
+            if (item.icon === '🧙‍♂️') state.equippedHat = '🧙‍♂️';
+            playSound('gold');
+            spawnParticles(null, null, 20, true);
+            showToast('🛒 ' + item.name + ' comprado e equipado!');
+          } else {
+            showToast('❌ Ouro insuficiente!');
+            playSound('hit', 0.5);
+          }
+          break;
+        }
+      }
+      render();
+    }
+
+    /* ---------- Renderização Dinâmica da Interface ---------- */
+    function renderHeader() {
+      var xpNeeded = state.level * 50;
+      var xpPct = Math.min(100, Math.floor((state.xp / xpNeeded) * 100));
+      
+      var h = '';
+
+      // Barra Estilo Duolingo no Topo
+      h += '<div class="duo-bar">';
+      h += '  <div class="duo-stat streak" title="Ofensiva de dias seguidos">🔥 ' + state.streak + 'd</div>';
+      h += '  <div class="duo-stat gold" title="Seu Ouro acumulado">🪙 ' + state.gold + '</div>';
+      h += '  <div class="duo-stat level" title="Seu Nível atual">⭐ Nv.' + state.level + '</div>';
+      h += '  <div class="duo-stat chest" onclick="window.claimDailyChest()" title="Abrir Baú Diário">' + (state.chestClaimed ? '🎁 Off' : '🎁 Baú!') + '</div>';
+      h += '</div>';
+
+      h += '<div class="ph-top">';
+      h += '  <div class="who">';
+      h += '    <div class="avatar-frame">';
+      if (state.equippedHat) h += '      <span class="gear-hat">' + state.equippedHat + '</span>';
+      h += '      <div class="avatar">G1</div>';
+      h += '    </div>';
+      h += '    <div><b>Jogador 1</b><small>Guerreiro Nível ' + state.level + '</small></div>';
+      h += '  </div>';
+      h += '</div>';
+
+      h += '<div class="xp-bar-wrap">';
+      h += '  <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:var(--p-muted);">';
+      h += '    <span>PROGRESSO DE XP</span><span>' + state.xp + ' / ' + xpNeeded + '</span>';
+      h += '  </div>';
+      h += '  <div class="bar"><i style="width:' + xpPct + '%; background: linear-gradient(90deg, var(--p-purple), var(--p-cyan));"></i></div>';
+      h += '</div>';
+
+      // Progresso da Meta Diária
+      var goalPct = Math.min(100, Math.floor((state.dailyDone / state.dailyGoalTotal) * 100));
+      h += '<div class="daily-goal-box">';
+      h += '  <div class="daily-goal-info">';
+      h += '    <b>🎯 Meta Diária do Estudo</b>';
+      h += '    <small>' + state.dailyDone + ' de ' + state.dailyGoalTotal + ' tarefas completadas hoje</small>';
+      h += '  </div>';
+      h += '  <div style="width:70px;"><div class="bar" style="height:8px;"><i style="width:' + goalPct + '%; background:var(--p-green);"></i></div></div>';
+      h += '</div>';
+
+      h += '<div class="offline-tag">' + ic('wifioff') + ' Sincronização P2P Ativa (Bluetooth/Wi-Fi Direct)</div>';
+      return h;
+    }
+
+    function renderScreenContent() {
+      var html = renderHeader();
+
+      if (state.scannerOpen) {
+        html += '<div class="scan">';
+        html += '  <div class="scanbox"><i></i><br><br>📷</div>';
+        html += '  <div><b>Escaneando QR Code...</b><br><small style="color:var(--p-muted);">Aproxime o celular do seu colega de equipe para parear via Bluetooth/Wi-Fi Direct</small></div>';
+        html += '  <button class="pbtn purple" type="button" onclick="window.closeScanner()">Cancelar</button>';
+        html += '</div>';
+        return html;
+      }
+
+      // MODAL DE REGISTRAR TAREFA / MISSÃO
+      if (state.addTaskOpen) {
+        html += '<div class="task-modal">';
+        html += '  <h4><span>➕ Nova Missão Escolar</span> <button type="button" onclick="window.closeAddTask()" style="background:none; border:0; color:#fff; font-size:20px; cursor:pointer;">✖</button></h4>';
+        
+        html += '  <div class="form-group">';
+        html += '    <label>Nome do Trabalho ou Tarefa:</label>';
+        html += '    <input type="text" id="inpTaskTitle" placeholder="Ex: Trabalho de História ou Exercícios de Física">';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Nome do Monstro da Procrastinação:</label>';
+        html += '    <input type="text" id="inpMonTitle" placeholder="Ex: Devorador de Datas ou Soneca Suprema">';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Prazo de Entrega (Dias):</label>';
+        html += '    <input type="number" id="inpDays" value="2" min="1" max="30">';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Primeira Etapa do Trabalho:</label>';
+        html += '    <input type="text" id="inpStep1" placeholder="Ex: Ler o capítulo 3 do livro">';
+        html += '  </div>';
+
+        html += '  <div class="form-group">';
+        html += '    <label>Segunda Etapa do Trabalho:</label>';
+        html += '    <input type="text" id="inpStep2" placeholder="Ex: Escrever o resumo no caderno">';
+        html += '  </div>';
+
+        html += '  <button class="pbtn green" type="button" style="margin-top:12px;" onclick="window.submitNewTask()">⚔️ Criar Missão & Invocar Monstro</button>';
+        html += '</div>';
+        return html;
+      }
+
+      // TAB 0: MISSÕES
+      if (state.tab === 0) {
+        html += '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">';
+        html += '  <h4 style="margin:0;">📜 Suas Missões Escolares</h4>';
+        html += '  <button class="pbtn cyan" type="button" style="min-height:32px; padding:4px 10px; font-size:12px;" onclick="window.openAddTask()">' + ic('plus') + ' Registrar Tarefa</button>';
+        html += '</div>';
+
+        for (var i = 0; i < state.missions.length; i++) {
+          var m = state.missions[i];
+          var activeClass = (m.id === state.activeMissionId) ? ' style="border-color:var(--p-yellow); background:var(--p-card2);"' : '';
+          
+          html += '<div class="mcard"' + activeClass + ' onclick="window.selectMission(\'' + m.id + '\')">';
+          html += '  <div class="mi">' + monsterSvg('#FF3366', 100) + '</div>';
+          html += '  <div class="mt">';
+          html += '    <b>' + m.nome + '</b>';
+          html += '    <small>Inimigo: ' + m.monstro + ' • <span class="urgent">Prazo: ' + m.dias + ' dia(s)</span></small>';
+          html += '  </div>';
+          html += '</div>';
+        }
+
+        var activeM = getActiveMission();
+        html += '<h4 style="margin-top:14px;">Checklist do ' + activeM.curto + '</h4>';
+        html += '<div class="steps">';
+        var allDone = true;
+        for (var j = 0; j < activeM.etapas.length; j++) {
+          var st = activeM.etapas[j];
+          if (!st.done) allDone = false;
+          var doneCls = st.done ? ' done' : '';
+          html += '<button class="step' + doneCls + '" type="button" onclick="window.toggleStep(\'' + activeM.id + '\', ' + j + ')">';
+          html += '  <div class="ck">' + ic('check') + '</div>';
+          html += '  <span class="tx">' + st.t + '</span>';
+          html += '  <span class="xpt">+' + st.xp + ' XP</span>';
+          html += '</button>';
+        }
+        html += '</div>';
+
+        if (allDone) {
+          html += '<div class="win-banner">🏆 TODAS AS ETAPAS CONCLUÍDAS! Monstro enfraquecido ao máximo!</div>';
+        }
+
+        // Timer Pomodoro / Foco
+        var mins = Math.floor(state.timerSec / 60);
+        var secs = state.timerSec % 60;
+        var timeStr = ('0' + mins).slice(-2) + ':' + ('0' + secs).slice(-2);
+
+        html += '<div class="focus-box">';
+        html += '  <small style="font-weight:800; color:var(--p-muted);">MODO FOCO (POMODORO GAMIFICADO)</small>';
+        html += '  <div class="tm" id="timerText">' + timeStr + '</div>';
+        html += '  <button class="pbtn ' + (state.focusing ? 'pink' : 'green') + '" type="button" style="margin-top:8px;" onclick="window.toggleTimer()">';
+        html += '    ' + (state.focusing ? '⏸ Pausar Foco' : '▶ Iniciar Sessão de Foco') + '';
+        html += '  </button>';
+        html += '</div>';
+      }
+
+      // TAB 1: BATALHA
+      else if (state.tab === 1) {
+        var currM = getActiveMission();
+        var hpPct = Math.min(100, Math.max(0, Math.floor((state.bossHp / state.bossMaxHp) * 100)));
+
+        html += '<h4>⚔️ Arena de Batalha: ' + currM.monstro + '</h4>';
+        html += '<p small style="color:var(--p-muted); font-size:12px;">Derrote o monstro para entregar o trabalho no prazo!</p>';
+
+        html += '<div class="stage" id="stageEl" onclick="window.attackMonster(event)">';
+        if (state.combo > 1) {
+          html += '  <div class="combo-tag">COMBO x' + state.combo + '!</div>';
+        }
+        html += '  <div class="mon">' + monsterSvg(state.bossHp <= 0 ? '#6F69A3' : '#FF3366', state.bossHp) + '</div>';
+        html += '  <h5>' + currM.monstro + '</h5>';
+        
+        html += '  <div class="xp-bar-wrap" style="max-width:200px; margin:6px auto 0;">';
+        html += '    <div class="bar"><i style="width:' + hpPct + '%; background: linear-gradient(90deg, #FF3366, #FF9100);"></i></div>';
+        html += '  </div>';
+        html += '  <small style="font-weight:800; color:#fff;">HP: ' + state.bossHp + ' / ' + state.bossMaxHp + '</small><br>';
+
+        if (state.bossHp > 0) {
+          html += '  <span class="tap-prompt">👉 TOQUE RÁPIDO PARA ATACAR!</span><br>';
+          html += '  <button class="special-atk-btn" type="button" onclick="event.stopPropagation(); window.specialAttack();">⚡ SUPER GOLPE (ULTIMATE)</button>';
+        } else {
+          html += '  <div class="win-banner" style="margin-top:8px;">💥 DERROTADO COM SUCESSO!</div>';
+        }
+        html += '</div>';
+
+        html += '<div class="row2">';
+        html += '  <button class="pbtn purple" type="button" onclick="window.setTab(0)">📜 Voltar a Estudar</button>';
+        html += '  <button class="pbtn" type="button" onclick="window.openScanner()">' + ic('qr') + ' Parear Co-op</button>';
+        html += '</div>';
+      }
+
+      // TAB 2: LOJA
+      else if (state.tab === 2) {
+        html += '<h4>🛒 Loja de Equipamentos RPG</h4>';
+        html += '<p small style="color:var(--p-muted); font-size:12px;">Use o ouro ganho nos estudos para customizar seu herói!</p>';
+
+        html += '<div class="shop-grid">';
+        for (var k = 0; k < state.store.length; k++) {
+          var item = state.store[k];
+          var eqCls = item.equipped ? ' equipped' : '';
+          html += '<div class="shop-item' + eqCls + '" onclick="window.buyItem(\'' + item.id + '\')">';
+          html += '  <div class="icon">' + item.icon + '</div>';
+          html += '  <b>' + item.name + '</b>';
+          html += '  <div class="price">🪙 ' + item.price + '</div>';
+          html += '  <small style="font-size:10px; color:var(--p-muted);">' + (item.equipped ? '✅ EQUIPADO' : 'Clique p/ comprar') + '</small>';
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+
+      // TAB 3: ALIADOS (RAIDE & GUILDA CO-OP)
+      else if (state.tab === 3) {
+        var raidPct = Math.min(100, Math.max(0, Math.floor((state.raidHp / state.raidMaxHp) * 100)));
+
+        html += '<h4>🤝 Guilda & Raide Co-op</h4>';
+        html += '<p small style="color:var(--p-muted); font-size:12px;">Trabalhem em equipe para derrotar o Chefe de Turma!</p>';
+
+        // Card do Chefão da Raide
+        html += '<div class="raid-card">';
+        html += '  <div class="raid-header">';
+        html += '    <span class="raid-title">👹 Procrastinador Supremo</span>';
+        html += '    <span class="pill-stat gold" style="font-size:10px;">RAIDE CO-OP</span>';
+        html += '  </div>';
+        
+        html += '  <div class="raid-boss-stage">';
+        html += '    <span class="boss-icon">👾</span>';
+        html += '    <div style="flex:1;">';
+        html += '      <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:var(--p-muted);">';
+        html += '        <span>HP COLETIVO DA TURMA</span><span>' + state.raidHp + ' / ' + state.raidMaxHp + '</span>';
+        html += '      </div>';
+        html += '      <div class="bar" style="margin-top:4px;"><i style="width:' + raidPct + '%; background: linear-gradient(90deg, #FF007F, #FF3366);"></i></div>';
+        html += '    </div>';
+        html += '  </div>';
+
+        if (state.raidHp > 0) {
+          html += '  <button class="pbtn pink" type="button" style="margin-top:6px;" onclick="window.attackRaidBoss()">⚔️ Atacar Boss da Raide (Unir Forças)</button>';
+        } else {
+          html += '  <div class="win-banner">🎉 CHEFÃO DA RAIDE DERROTADO PELA TURMA!</div>';
+        }
+        html += '</div>';
+
+        // Placar de Líderes
+        html += '<h4 style="margin-top:14px;">🏆 Placar de Contribuição</h4>';
+        html += '<div class="leaderboard">';
+        html += '  <div class="leader-row me"><span>1. Você (Guerreiro)</span><span style="color:var(--p-cyan);">' + (240 + state.raidDmgDealt) + ' Dano</span></div>';
+        html += '  <div class="leader-row"><span>2. Lucas (Mago)</span><span>190 Dano</span></div>';
+        html += '  <div class="leader-row"><span>3. Sofia (Curandeira)</span><span>150 Dano</span></div>';
+        html += '</div>';
+
+        // Parceiro de Dupla
+        html += '<div class="partner-card">';
+        html += '  <div class="avatar" style="width:38px; height:38px; font-size:13px;">L2</div>';
+        html += '  <div style="flex:1;">';
+        html += '    <b><span class="status-dot"></span> Lucas (Dupla Conectada)</b><br>';
+        html += '    <small style="color:var(--p-muted);">Conexão P2P Direct via Bluetooth</small>';
+        html += '  </div>';
+        html += '</div>';
+
+        // Feed de Atividades Recentes
+        html += '<h4 style="margin-top:14px;">📡 Feed da Turma (Tempo Real)</h4>';
+        html += '<div class="activity-feed">';
+        for (var f = 0; f < state.activityFeed.length; f++) {
+          var itemFeed = state.activityFeed[f];
+          html += '<div class="feed-item"><b>' + itemFeed.user + '</b> ' + itemFeed.action + '</div>';
+        }
+        html += '</div>';
+
+        html += '<button class="pbtn purple" type="button" style="margin-top:12px;" onclick="window.openScanner()">' + ic('qr') + ' Conectar Novo Colega</button>';
+      }
+
+      return html;
+    }
+
+    function renderNav() {
+      var tabs = [
+        { id: 0, label: 'Missões', icon: 'map' },
+        { id: 1, label: 'Batalha', icon: 'bolt' },
+        { id: 2, label: 'Loja', icon: 'shop' },
+        { id: 3, label: 'Aliados', icon: 'users' }
+      ];
+
+      var html = '';
+      for (var i = 0; i < tabs.length; i++) {
+        var t = tabs[i];
+        var isCurrent = state.tab === t.id ? ' aria-current="true"' : '';
+        html += '<button type="button"' + isCurrent + ' onclick="window.setTab(' + t.id + ')">';
+        html +=   ic(t.icon);
+        html += '  <span>' + t.label + '</span>';
+        html += '</button>';
+      }
+      return html;
+    }
+
+    function renderPresenterControls() {
+      var btns = document.querySelectorAll('.btn-ctrl');
+      for (var i = 0; i < btns.length; i++) {
+        var jump = parseInt(btns[i].getAttribute('data-jump'), 10);
+        if (jump === state.tab && !state.scannerOpen && !state.addTaskOpen) {
+          btns[i].setAttribute('aria-pressed', 'true');
+        } else {
+          btns[i].setAttribute('aria-pressed', 'false');
+        }
+      }
+    }
+
+    function render() {
+      var screenEl = document.getElementById('screen');
+      var pnavEl = document.getElementById('pnav');
+      if (screenEl) {
+        var canvasEl = document.getElementById('particleCanvas');
+        screenEl.innerHTML = renderScreenContent();
+        if (canvasEl) screenEl.appendChild(canvasEl);
+      }
+      if (pnavEl) pnavEl.innerHTML = renderNav();
+      renderPresenterControls();
+    }
+
+    /* ---------- Exposição de Métodos Globais ---------- */
+    window.setTab = function(t) {
+      playSound('click');
+      state.tab = t;
+      state.scannerOpen = false;
+      state.addTaskOpen = false;
+      render();
+    };
+
+    window.selectMission = function(id) {
+      playSound('click');
+      state.activeMissionId = id;
+      state.bossHp = 100;
+      state.combo = 0;
+      showToast('Missão Selecionada!');
+      render();
+    };
+
+    window.toggleStep = toggleStep;
+    window.attackMonster = attackMonster;
+    window.specialAttack = specialAttack;
+    window.attackRaidBoss = attackRaidBoss;
+    window.toggleTimer = toggleTimer;
+    window.buyItem = buyItem;
+    window.claimDailyChest = claimDailyChest;
+
+    window.openScanner = function() {
+      playSound('click');
+      state.scannerOpen = true;
+      render();
+    };
+
+    window.closeScanner = function() {
+      playSound('click');
+      state.scannerOpen = false;
+      render();
+    };
+
+    window.openAddTask = function() {
+      playSound('click');
+      state.addTaskOpen = true;
+      render();
+    };
+
+    window.closeAddTask = function() {
+      playSound('click');
+      state.addTaskOpen = false;
+      render();
+    };
+
+    window.submitNewTask = function() {
+      var title = document.getElementById('inpTaskTitle') ? document.getElementById('inpTaskTitle').value : '';
+      var monName = document.getElementById('inpMonTitle') ? document.getElementById('inpMonTitle').value : '';
+      var days = document.getElementById('inpDays') ? document.getElementById('inpDays').value : 2;
+      var st1 = document.getElementById('inpStep1') ? document.getElementById('inpStep1').value : '';
+      var st2 = document.getElementById('inpStep2') ? document.getElementById('inpStep2').value : '';
+
+      var steps = [];
+      if (st1) steps.push({ t: st1, xp: 15, gold: 20, done: false });
+      if (st2) steps.push({ t: st2, xp: 25, gold: 30, done: false });
+
+      createCustomTask(title, monName, days, steps);
+    };
+
+    /* ---------- Event Listeners Externos ---------- */
+    document.addEventListener('DOMContentLoaded', function() {
+      var jumpBtns = document.querySelectorAll('.btn-ctrl');
+      for (var i = 0; i < jumpBtns.length; i++) {
+        jumpBtns[i].addEventListener('click', function() {
+          var targetTab = parseInt(this.getAttribute('data-jump'), 10);
+          window.setTab(targetTab);
+        });
+      }
+
+      var resetBtn = document.getElementById('resetProto');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', resetGame);
+      }
+
+      render();
+    });
+
+  })();
+  </script>
+</body>
+</html>
